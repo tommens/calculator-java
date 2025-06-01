@@ -13,6 +13,8 @@ public class ShuntingYard {
 
     public static List<Object> infixToRPN(String expression) {
 
+        expression = preprocess(expression);
+
         List<Object> outputQueue = new ArrayList<>();
         Stack<String> operatorStack = new Stack<>();
         expression = expression.replace(" ", "");
@@ -42,6 +44,14 @@ public class ShuntingYard {
         }
 
         return outputQueue;
+    }
+
+    private static String preprocess(String expression) {
+        return expression
+                .replaceAll("\\s+", "")
+                .replaceAll("(\\d)(\\()", "$1*$2")
+                .replaceAll("(\\))(\\d)", "$1*$2")
+                .replaceAll("(\\))(\\()", "$1*$2");
     }
 }
 

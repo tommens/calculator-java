@@ -10,6 +10,27 @@ import java.util.stream.Collectors;
 public class ShuntingYardTest {
 
     @Test
+    public void testImplicitMultiplication1() {
+        String input = "3(5)";
+        String output = convertListToString(ShuntingYard.infixToRPN(input));
+        Assert.assertEquals("3 5 *", output);
+    }
+
+    @Test
+    public void testImplicitMultiplication2() {
+        String input = "(2+3)(4+1)";
+        String output = convertListToString(ShuntingYard.infixToRPN(input));
+        Assert.assertEquals("2 3 + 4 1 + *", output);
+    }
+
+    @Test
+    public void testImplicitMultiplication3() {
+        String input = "6 + (3+1)(2+2)";
+        String output = convertListToString(ShuntingYard.infixToRPN(input));
+        Assert.assertEquals("6 3 1 + 2 2 + * +", output);
+    }
+
+    @Test
     public void test1() {
         String input = "2 + 4 * 10 ^ 2 / 16 - 3";
         String output = convertListToString(ShuntingYard.infixToRPN(input));

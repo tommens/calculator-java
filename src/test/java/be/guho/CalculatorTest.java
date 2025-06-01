@@ -15,6 +15,27 @@ public class CalculatorTest {
     }
 
     @Test
+    public void testImplicitMultiplication1() {
+        String input = "3(5)";
+        double output = calculator.compute(input);
+        Assert.assertEquals(15.0, output, 0);
+    }
+
+    @Test
+    public void testImplicitMultiplication2() {
+        String input = "(2+3)(4+1)";
+        double output = calculator.compute(input);
+        Assert.assertEquals(25.0, output, 0);
+    }
+
+    @Test
+    public void testImplicitMultiplication3() {
+        String input = "6 + (3+1)(2+2)";
+        double output = calculator.compute(input);
+        Assert.assertEquals(22.0, output, 0);
+    }
+
+    @Test
     public void test1() {
         String input = "2 + 4 * 10 ^ 2 / 16 - 3";
         double ouput = calculator.compute(input);
