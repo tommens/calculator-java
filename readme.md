@@ -1,4 +1,4 @@
-
+![Build](https://github.com/guillaumehx/memoire-implementation-java/actions/workflows/maven.yml/badge.svg)
 # Implémentation Java
 
 Pour plus de facilité, il est nécéssaire d'avoir le JDK 21 et d’utiliser **IntelliJ**, dont la licence est gratuite avec un compte UMons. Sinon, un essai gratuit de 30 jours est disponible.
