@@ -1,103 +1,63 @@
 package be.calculator;
 
 import be.calculator.parser.ShuntingYard;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class ShuntingYardTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    @Test
-    public void testImplicitMultiplication1() {
-        String input = "3(5)";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("3 5 *", output);
+class ShuntingYardTest {
+
+    private static Stream<Arguments> provideRPNTestCases() {
+        return Stream.of(
+            Arguments.of("3(5)", "3 5 *"),
+            Arguments.of("(2+3)(4+1)", "2 3 + 4 1 + *"),
+            Arguments.of("6 + (3+1)(2+2)", "6 3 1 + 2 2 + * +"),
+            Arguments.of("2 + 4 * 10 ^ 2 / 16 - 3", "2 4 10 2 ^ * 16 / + 3 -"),
+            Arguments.of("(2 + 1) * (8 / 2) / (18 * 2)", "2 1 + 8 2 / * 18 2 * /"),
+            Arguments.of("(2 + (4 - 3)) * (10 / 5)", "2 4 3 - + 10 5 / *"),
+            Arguments.of(
+                "((15 * 2^3 - (48 / 6 + 2^2)) * 3) / ((100 / 25 * 3) + (7^2 - 40))",
+                "15 2 3 ^ * 48 6 / 2 2 ^ + - 3 * 100 25 / 3 * 7 2 ^ 40 - + /"
+            ),
+            Arguments.of(
+                "(((3 + 5) * (2 - 1)) + ((6 / 2) ^ 2)) * (4 + 1)",
+                "3 5 + 2 1 - * 6 2 / 2 ^ + 4 1 + *"
+            ),
+            Arguments.of(
+                "(((((1 + 2) * 3) + 4) * (5 + (6 - 2))) ^ 2)",
+                "1 2 + 3 * 4 + 5 6 2 - + * 2 ^"
+            ),
+            Arguments.of(
+                "((2^3^2) + ((4 + 1) * (6 - 2))) / ((7 + 3) * (2 + 2))",
+                "2 3 2 ^ ^ 4 1 + 6 2 - * + 7 3 + 2 2 + * /"
+            ),
+            Arguments.of(
+                "((((1 + 2) + 3) + 4) + 5) * (((6 * 7) * 8) * 9)",
+                "1 2 + 3 + 4 + 5 + 6 7 * 8 * 9 * *"
+            ),
+            Arguments.of(
+                "(((((10 - 2)^2) + ((3 + 1)^3)) * ((8 / 4)^2)))",
+                "10 2 - 2 ^ 3 1 + 3 ^ + 8 4 / 2 ^ *"
+            ),
+            Arguments.of(
+                "(((((1+2)*(3+4))-((5+6)*(7+8)))+((9+10)*(11+12)))^2)",
+                "1 2 + 3 4 + * 5 6 + 7 8 + * - 9 10 + 11 12 + * + 2 ^"
+            )
+        );
     }
-
-    @Test
-    public void testImplicitMultiplication2() {
-        String input = "(2+3)(4+1)";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("2 3 + 4 1 + *", output);
-    }
-
-    @Test
-    public void testImplicitMultiplication3() {
-        String input = "6 + (3+1)(2+2)";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("6 3 1 + 2 2 + * +", output);
-    }
-
-    @Test
-    public void test1() {
-        String input = "2 + 4 * 10 ^ 2 / 16 - 3";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("2 4 10 2 ^ * 16 / + 3 -", output);
-    }
-
-    @Test
-    public void test2() {
-        String input = "(2 + 1) * (8 / 2) / (18 * 2)";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("2 1 + 8 2 / * 18 2 * /", output);
-    }
-
-    @Test
-    public void test3() {
-        String input = "(2 + (4 - 3)) * (10 / 5)";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("2 4 3 - + 10 5 / *", output);
-    }
-
-    @Test
-    public void test4() {
-        String input = "((15 * 2^3 - (48 / 6 + 2^2)) * 3) / ((100 / 25 * 3) + (7^2 - 40))";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("15 2 3 ^ * 48 6 / 2 2 ^ + - 3 * 100 25 / 3 * 7 2 ^ 40 - + /", output);
-    }
-
-    @Test
-    public void test5() {
-        String input = "(((3 + 5) * (2 - 1)) + ((6 / 2) ^ 2)) * (4 + 1)";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("3 5 + 2 1 - * 6 2 / 2 ^ + 4 1 + *", output);
-    }
-
-    @Test
-    public void test6() {
-        String input = "(((((1 + 2) * 3) + 4) * (5 + (6 - 2))) ^ 2)";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("1 2 + 3 * 4 + 5 6 2 - + * 2 ^", output);
-    }
-
-    @Test
-    public void test7() {
-        String input = "((2^3^2) + ((4 + 1) * (6 - 2))) / ((7 + 3) * (2 + 2))";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("2 3 2 ^ ^ 4 1 + 6 2 - * + 7 3 + 2 2 + * /", output);
-    }
-
-    @Test
-    public void test8() {
-        String input = "((((1 + 2) + 3) + 4) + 5) * (((6 * 7) * 8) * 9)";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("1 2 + 3 + 4 + 5 + 6 7 * 8 * 9 * *", output);
-    }
-
-    @Test
-    public void test9() {
-        String input = "(((((10 - 2)^2) + ((3 + 1)^3)) * ((8 / 4)^2)))";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("10 2 - 2 ^ 3 1 + 3 ^ + 8 4 / 2 ^ *", output);
-    }
-
-    @Test
-    public void test10() {
-        String input = "(((((1+2)*(3+4))-((5+6)*(7+8)))+((9+10)*(11+12)))^2)";
-        String output = convertListToString(ShuntingYard.infixToRPN(input));
-        Assert.assertEquals("1 2 + 3 4 + * 5 6 + 7 8 + * - 9 10 + 11 12 + * + 2 ^", output);
+    
+    @ParameterizedTest
+    @MethodSource("provideRPNTestCases")
+    void testInfixToRPN(String input, String expectedOutput) {
+        String actualOutput = convertListToString(ShuntingYard.infixToRPN(input));
+        assertEquals(expectedOutput, actualOutput, 
+            String.format("Test failed for input: %s", input));
     }
     
     private String convertListToString(final List<Object> input) {

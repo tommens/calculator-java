@@ -1,76 +1,49 @@
 package be.calculator;
 
 import be.calculator.application.Calculator;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import java.util.stream.Stream;
 
-public class BinaryOperationTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class BinaryOperationTest {
 
     private static Calculator calculator;
 
-    @BeforeClass
+    @BeforeAll
     public static void before() {
         calculator = new Calculator();
     }
-
-    @Test
-    public void testAddition() {
-        String input = "3+5";
+    
+    private static Stream<Arguments> provideArithmeticOperations() {
+        return Stream.of(
+                Arguments.of("3+5", 8.0),
+                Arguments.of("3-5", -2.0),
+                Arguments.of("3*5", 15.0),
+                Arguments.of("3(5)", 15.0),
+                Arguments.of("3/5", 0.6),
+                Arguments.of("3/0", Double.POSITIVE_INFINITY),
+                Arguments.of("-3/0", Double.NEGATIVE_INFINITY)
+        );
+    }
+    
+    @ParameterizedTest
+    @MethodSource("provideArithmeticOperations")
+     void testArithmeticOperations(String input, double expected) {
         double output = calculator.compute(input);
-        Assert.assertEquals(8.0, output, 0);
+        assertEquals(expected, output, 0.0001, 
+            String.format("Test failed for input: %s", input));
     }
 
     @Test
-    public void testSubtraction() {
-        String input = "3-5";
-        double output = calculator.compute(input);
-        Assert.assertEquals(-2.0, output, 0);
-    }
-
-    @Test
-    public void testMultiplication() {
-        String input = "3*5";
-        double output = calculator.compute(input);
-        Assert.assertEquals(15.0, output, 0);
-    }
-
-    @Test
-    public void testImplicitMultiplication() {
-        String input = "3(5)";
-        double output = calculator.compute(input);
-        Assert.assertEquals(15.0, output, 0);
-    }
-
-    @Test
-    public void testDivision() {
-        String input = "3/5";
-        double output = calculator.compute(input);
-        Assert.assertEquals(0.6, output, 0);
-    }
-
-    @Test
-    public void testPositiveDivisionByZero() {
-        // division by zero of a positive number should give positive infinity
-        String input = "3/0";
-        double output = calculator.compute(input);
-        Assert.assertEquals(Double.POSITIVE_INFINITY, output, 0);
-    }
-
-    @Test
-    public void testNegativeDivisionByZero() {
-        // division by zero of a positive number should give negative infinity
-        String input = "-3/0";
-        double output = calculator.compute(input);
-        Assert.assertEquals(Double.NEGATIVE_INFINITY, output, 0);
-    }
-
-    @Test
-    public void testSquareRoot() {
-        // division by zero of a positive number should give positive infinity
+     void testSquareRoot() {
         String input = "sqrt(4)";
         double output = calculator.compute(input);
-        Assert.assertEquals(2.0, output, 0);
+        assertEquals(2.0, output, 0.0001);
     }
 
 }
