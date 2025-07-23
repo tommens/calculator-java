@@ -1,4 +1,4 @@
-name: Maven compile test
+name: Maven compile and test
 
 on:
   push:
