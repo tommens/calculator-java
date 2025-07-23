@@ -19,7 +19,7 @@ Vérifiez dans le terminal de votre machine si Maven 3 est  déjà installé en 
 
 Pour compiler le programme, lancez la commande ``mvn clean compile``.
 
-Pour tester le programme (avec les tests unitaires JUnit), lancez la commande ``mvn test``.
+Pour tester le programme (avec les tests unitaires de JUnit 5), lancez la commande ``mvn test``.
 
 # Exécution
 
