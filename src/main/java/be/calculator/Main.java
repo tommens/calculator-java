@@ -1,6 +1,6 @@
-package be.guho;
+package be.calculator;
 
-import be.guho.application.Calculator;
+import be.calculator.application.Calculator;
 
 public class Main {
 
